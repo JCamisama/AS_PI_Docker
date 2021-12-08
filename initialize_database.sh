@@ -1,0 +1,3 @@
+service couchdb restart
+curl --location --request PUT 'http://localhost:5984/pieces' --header 'Authorization: Basic c3VwZXJ2aXNvcjpzdHJvbmdwYXNzd29yZA=='
+curl --location --request POST 'http://localhost:5984/pieces' --header 'Content-Type: application/json' --header 'Authorization: Basic c3VwZXJ2aXNvcjpzdHJvbmdwYXNzd29yZA==' --data-raw '{"_id":"_design/pieces", "views": { "byName": { "map": "function (doc) { emit(doc.name, doc.composer);}" }}}'

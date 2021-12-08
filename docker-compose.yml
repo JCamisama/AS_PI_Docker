@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  my-couchdb:
+    build: ./couchdb
+    ports:
+      - "127.0.0.1:5984:5984"
+    volumes:
+      - ./data:/opt/couchdb/data
+  frontend-couchdb:
+    build: ./frontend-couchdb
+    depends_on:
+      - "my-couchdb"
+    ports:
+      - 80:80
