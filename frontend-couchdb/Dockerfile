@@ -1,44 +1,36 @@
-#############
-### build ###
-#############
-
-# base image
 FROM node:14-slim as build
 
 ARG ANGULAR_ENV
 ARG ANGULAR_PATH
 
-# set working directory
+# Directorio base
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
+# Añadiendo `/app/node_modules/.bin` a $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
-# install and cache app dependencies
+# Instalando las dependencias de la app
 COPY package.json /app/package.json
 RUN npm install
 RUN npm install -g @angular/cli@latest
 
-# add app
+# Copiando los contenidos de app
 COPY . /app
 
-# generate build
+# Generanco el build de la aplicación
 RUN npm run build
 
-############
-### prod ###
-############
 
-# base image
+### Despliegue en producción ###
+
+# Imagen base del servidor
 FROM nginx:1.16.0-alpine
 
-# copy artifact build from the 'build environment'
+# Copiando el artefacto construido
 COPY --from=build /app/dist/frontend-couchdb /usr/share/nginx/html
 
-# COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
-
-# expose port 80
+# Exponiendo el puerto 80 relacionado a HTTP
 EXPOSE 80
 
-# run nginx
+# Comando de arranque del servidor
 CMD ["nginx", "-g", "daemon off;"]
